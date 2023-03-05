@@ -1,0 +1,19 @@
+{
+  "name": "azure_functions",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "axios": "^1.1.3",
+    "crypto": "^1.0.1",
+    "rxjs": "^7.5.6",
+    "symbol-sdk": "^2.0.3",
+    "ws": "^8.8.1"
+  },
+  "files": [
+    "param-symbol"
+  ]
+}

@@ -1,12 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "../pages/Login";
+import History from "../pages/History";
 
 function RoutingConfig(): JSX.Element {
     return (
         <>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route path="/" element={<History />} />
             </Routes>
           </BrowserRouter>
         </>

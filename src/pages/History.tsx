@@ -15,6 +15,7 @@ function History(): JSX.Element {
           const ret = await fetch('/.auth/me');
           const me = await ret.json();
           setMe(me);
+          console.log(me)
         })()
     }, []);      
 

@@ -1,4 +1,4 @@
-import { Address, TransactionGroup , RepositoryFactoryHttp, MosaicId, MetadataType, Convert ,ChainHttp, Order, Account} from 'symbol-sdk'
+import { RepositoryFactoryHttp, Account} from 'symbol-sdk'
 const NODE = "https://sym-test-04.opening-line.jp:3001"
 const repo = new RepositoryFactoryHttp(NODE);
 const networkType = 152;

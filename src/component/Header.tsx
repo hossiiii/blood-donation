@@ -19,7 +19,7 @@ function Header(props: {setOpenLeftDrawer:any}): JSX.Element {
                 sx={{position: "absolute" ,left: "20px"}}
                 onClick={() => setOpenLeftDrawer(true)}
             />
-            <img src="logo.png" width={"100px"}/>
+            <img src="logo.png" width={"120px"} alt="logo"/>
         </Box>
         </>
       );

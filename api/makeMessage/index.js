@@ -80,8 +80,17 @@ module.exports = async function (context, req) {
     networkType
   )
 
-  //管理者用のダミートランザクションの作成
+  //ここにuserのblood-donation-roleをメッセージに埋め込む処理を書く
   const innerTx3 = sym.TransferTransaction.create(
+    sym.Deadline.create(epochAdjustment),
+    bloodAccount,
+    [],
+    sym.PlainMessage.create(message),
+    networkType
+  )
+
+  //管理者用のダミートランザクションの作成
+  const innerTx4 = sym.TransferTransaction.create(
     sym.Deadline.create(epochAdjustment),
     admin.address,
     [],
@@ -92,7 +101,8 @@ module.exports = async function (context, req) {
   const aggregateArray = [
     innerTx1.toAggregate(newAccount),
     innerTx2.toAggregate(newAccount),
-    innerTx3.toAggregate(admin.publicAccount),
+    innerTx3.toAggregate(newAccount),
+    innerTx4.toAggregate(admin.publicAccount),
   ]
 
   const aggregateTx = sym.AggregateTransaction.createComplete(

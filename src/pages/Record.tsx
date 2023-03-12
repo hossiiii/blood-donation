@@ -28,7 +28,7 @@ function Record(): JSX.Element {
     const [isFinishMessage, setIsFinishMessage] = useState<boolean>(false);
 
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
-    const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, seconds: number }[]}[]>([]);
+    const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, message: string, seconds: number }[]}[]>([]);
     const { Image } = useQRCode();
 
     const [isOpenQRCamera, setIsOpenQRCamera] = useState<boolean>(false);
@@ -171,7 +171,8 @@ function Record(): JSX.Element {
                         <Typography variant="h6" component="span">
                         {`${history.action}`}
                         </Typography>
-                        <Typography>{`${history.name}`}</Typography>
+                        <Typography component="div" variant="caption">{`${history.name}`}</Typography>
+                        <Typography component="div" variant="caption" color="text.secondary">{`${history.message}`}</Typography>
                       </TimelineContent>
                     </TimelineItem>
                 </React.Fragment>

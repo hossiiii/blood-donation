@@ -30,7 +30,7 @@ function Home(): JSX.Element {
     const [roleList, setRoleList] = useState<string[]>([]);
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
     const [userName, setUserName] = useState<string | null>("");
-    const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, seconds: number }[]}[]>([]);
+    const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, message: string, seconds: number }[]}[]>([]);
     const [totalAmount, settTtalAmount] = useState<number>(0);
     const { Image } = useQRCode();
 
@@ -207,8 +207,9 @@ function Home(): JSX.Element {
                             variant="body2"
                             color="text.secondary"
                           >
-                            {`${getDateTime(history.seconds)} ago`}
+                            {(history.action==="donation")?`${getDateTime(history.seconds)} ago  ${dict.amount}(ml)`:`${getDateTime(history.seconds)} ago`}
                           </TimelineOppositeContent>
+
                           <TimelineSeparator>
                             {(history.action==="donation")?
                               <TimelineDot  sx={{ colr:'white', backgroundColor: 'orangered' }}
@@ -235,10 +236,8 @@ function Home(): JSX.Element {
                             <Typography variant="h6" component="span">
                             {`${history.action}`}
                             </Typography>
-                            <Typography>{`${history.name}`}</Typography>
-                            {(history.action==="donation")?
-                            <Typography component="div" variant="body2">{`${dict.amount}(ml)`}</Typography>
-                            :<></>}
+                            <Typography component="div" variant="caption">{`${history.name}`}</Typography>
+                            <Typography component="div" variant="caption" color="text.secondary">{`${history.message}`}</Typography>
                           </TimelineContent>
                         </TimelineItem>
                     </React.Fragment>

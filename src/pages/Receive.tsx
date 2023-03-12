@@ -1,4 +1,4 @@
-import { Alert, Box, Button,Typography } from "@mui/material";
+import { Box, Button,Typography } from "@mui/material";
 import React, { useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
@@ -27,7 +27,7 @@ function Receive(): JSX.Element {
     const [isFinishMessage, setIsFinishMessage] = useState<boolean>(false);
 
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
-    const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, seconds: number }[]}[]>([]);
+    const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, message: string, seconds: number }[]}[]>([]);
 
     const [isOpenQRCamera, setIsOpenQRCamera] = useState<boolean>(false);
 
@@ -169,7 +169,8 @@ function Receive(): JSX.Element {
                         <Typography variant="h6" component="span">
                         {`${history.action}`}
                         </Typography>
-                        <Typography>{`${history.name}`}</Typography>
+                        <Typography component="div" variant="caption">{`${history.name}`}</Typography>
+                        <Typography component="div" variant="caption" color="text.secondary">{`${history.message}`}</Typography>
                       </TimelineContent>
                     </TimelineItem>
                 </React.Fragment>

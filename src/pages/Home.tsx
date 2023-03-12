@@ -29,8 +29,8 @@ function Home(): JSX.Element {
     const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(false);
     const [roleList, setRoleList] = useState<string[]>([]);
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
-    const [placeName, setPlaceName] = useState<string | null>("");
-    const [dictList, setDictList] = useState<{address: string, amount: string, history: { address:string ,name: string, action: string, seconds: number }[]}[]>([]);
+    const [userName, setUserName] = useState<string | null>("");
+    const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, seconds: number }[]}[]>([]);
     const [totalAmount, settTtalAmount] = useState<number>(0);
     const { Image } = useQRCode();
 
@@ -52,7 +52,15 @@ function Home(): JSX.Element {
             console.log(list)
             let total = 0
             list.forEach((item) => {
-              if(item.history.length > 1) total = total + Number(item.amount)
+              if(item.history.length > 1){ //２つ以上ヒストリーがある場合はカウント対象
+                if(JSON.parse(localStorage.getItem('data')!).role === "check"){
+                  total = total + Number(item.amount)
+                }else{
+                  if(item.history[0].signerAddress === JSON.parse(localStorage.getItem('data')!).address){
+                    total = total + Number(item.amount)
+                  }
+                }
+              }
             })
             settTtalAmount(total)
           }
@@ -61,10 +69,9 @@ function Home(): JSX.Element {
 
     const handleAgreeClick = async (account:{privateKey:string,publicKey:string,address:string}) => {
       setOpenDialog(false)
-      let role = "donation"
+      let role = "user"
       if(roleList.includes("check")) role = "check"
-      if(roleList.includes("use")) role = "use"      
-      const name = placeName
+      const name = userName
       const res = await axios.post(process.env.REACT_APP_API_MAKE_ACCOUNT!, {
         transfer_amount: 0,
         userPublicKey: account.publicKey,
@@ -84,10 +91,10 @@ function Home(): JSX.Element {
       }
       const jsonString = JSON.stringify(data);
       localStorage.setItem('data', jsonString);
-      setAlertsMessage((roleList.includes("check") || roleList.includes("use"))?"施設アカウントが作成されました":"献血者アカウントが作成されました")
+      setAlertsMessage((roleList.includes("check"))?"施設アカウントが作成されました":"アカウントが作成されました")
       setSeverity("success")
       setOpenSnackbar(true)
-      if(roleList.includes("check") || roleList.includes("use")) window.location.replace(`${window.location.href}.auth/logout`)
+      if(roleList.includes("check")) window.location.replace(`${window.location.href}.auth/logout`)
     }
 
     //SnackBarの設定
@@ -114,8 +121,8 @@ function Home(): JSX.Element {
           const account = createAccount()
           handleAgreeClick(account)
         }}
-        dialogTitle={(roleList.includes("check") || roleList.includes("use"))?"施設アカウントの作成":"献血者アカウントの作成"}
-        dialogMessage={(roleList.includes("check") || roleList.includes("use"))?`一度作成したアカウトはブロックチェーン上に半永久的に記録されます。${placeName}という名前で施設アカウントを作成しますか？`:"一度作成したアカウトはブロックチェーン上に半永久的に記録されます。献血者アカウントを作成しますか？"}
+        dialogTitle={(roleList.includes("check"))?"施設アカウントの作成":"アカウントの作成"}
+        dialogMessage={(roleList.includes("check"))?`一度作成したアカウトはブロックチェーン上に半永久的に記録されます。${userName}という名前で施設アカウントを作成しますか？`:"一度作成したアカウトはブロックチェーン上に半永久的に記録されます。アカウントを作成しますか？"}
       />
       <Header
         setOpenLeftDrawer={setOpenLeftDrawer}
@@ -157,7 +164,7 @@ function Home(): JSX.Element {
                   your role is {`${JSON.parse(localStorage.getItem('data')!).role}`}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{marginTop:1}}>
-                    your total {totalAmount} ml blood {`${JSON.parse(localStorage.getItem('data')!).role}`}
+                  total {totalAmount} ml blood {(JSON.parse(localStorage.getItem('data')!).role) === "check" ? "checked" : "donated"}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{marginTop:1}}>
                   your history is write by blockchain
@@ -250,7 +257,7 @@ function Home(): JSX.Element {
           flexDirection="column"
         >
           {(isWaitingConfirmed)?
-          (roleList.includes("check") || roleList.includes("use"))?
+          (roleList.includes("check"))?
           <>
             <img src="top.png" width={"250px"} alt="top"/>
             <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:2}}>
@@ -264,9 +271,9 @@ function Home(): JSX.Element {
                 variant="outlined"            
                 fullWidth={true}
                 type={'text'}
-                value={placeName}
+                value={userName}
                 onChange={(e)=>{
-                  setPlaceName(e.target.value)
+                  setUserName(e.target.value)
                 }}  
               />
             </FormControl>
@@ -274,8 +281,14 @@ function Home(): JSX.Element {
               disabled={!isWaitingConfirmed}
               variant="contained"
               style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white"}}
-              onClick={() => {
-                setOpenDialog(true)
+              onClick={() => {           
+                if(userName===""){
+                  setAlertsMessage("施設名を入力して下さい")
+                  setSeverity("error")
+                  setOpenSnackbar(true)
+                }else{
+                  setOpenDialog(true)
+                }
               }}
             >
               施設アカウントを作成する
@@ -287,16 +300,36 @@ function Home(): JSX.Element {
             <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:2}}>
               アカウント情報が記載されているQRコードをお持ちの方は、設定から「アカウント情報のインポート」を行い、アカウントを作成して下さい。
             </Alert>            
+            <Typography component="div" variant="caption" sx={{marginBottom:5}}>ニックネームを入力しアカウントを作成して下さい。</Typography>
+            <FormControl>
+              <TextField
+                label="ニックネーム"
+                style={{width: "70vw", marginBottom: "30px"}}
+                variant="outlined"            
+                fullWidth={true}
+                type={'text'}
+                value={userName}
+                helperText="本名など個人情報は入力しないで下さい"
+                onChange={(e)=>{
+                  setUserName(e.target.value)
+                }}
+              />
+            </FormControl>
             <Button
               disabled={!isWaitingConfirmed}
               variant="contained"
               style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white"}}
               onClick={() => {
-                setPlaceName("donor")
-                setOpenDialog(true)
+                if(userName===""){
+                  setAlertsMessage("ニックネームを入力して下さい")
+                  setSeverity("error")
+                  setOpenSnackbar(true)
+                }else{
+                  setOpenDialog(true)
+                }
               }}
             >
-              献血者アカウントを作成する
+              アカウントを作成する
             </Button>
           </>
           :

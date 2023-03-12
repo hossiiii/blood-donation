@@ -46,6 +46,8 @@ function Donation(): JSX.Element {
       const res2 = await axios.post(process.env.REACT_APP_API_MAKE_MESSAGE!, {
         userPublicKey: JSON.parse(localStorage.getItem('data')!).publicKey, //ユーザーの公開鍵
         bloodAddressPlain: account.address, //血液アカウントのアドレス
+        action: "donation",
+        message: "テスト",
       });
       console.log(res2.data.data);
       setIsWaitingConfirmed2(false);
@@ -107,9 +109,9 @@ function Donation(): JSX.Element {
           flexDirection="column"
         >
           {(isWaitingConfirmed && isWaitingConfirmed2)?
-          (JSON.parse(localStorage.getItem('data')!).role === "check" || JSON.parse(localStorage.getItem('data')!).role === "use")?
+          (JSON.parse(localStorage.getItem('data')!).role === "check")?
           <>
-            <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血スタッフ、献血した血液を利用される方はメニューから「血液の確認 / 記録」を選んで血液QRコードを読み取って下さい</Typography>          
+            <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血施設の方はメニューから「血液の確認 / 記録」を選んで血液QRコードを読み取って下さい</Typography>          
           </>
           :(bloodAddressPlain === "")?
           <>
@@ -174,7 +176,7 @@ function Donation(): JSX.Element {
           justifyContent="center"
           flexDirection="column"
         >
-          <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血の前にホーム画面で献血者アカウントを作成して下さい。</Typography>          
+          <Typography component="div" variant="caption" sx={{marginBottom:1}}>ご利用の前にホーム画面でアカウントを作成して下さい。</Typography>          
         </Box>
         }
       </Box>

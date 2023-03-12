@@ -102,17 +102,17 @@ export const offlineSignature = async (userPrivateKey:string,signedHash:string,s
 };
 
 
-export const getHistory = async (list:string[]): Promise<{address: string, amount: string, history: { address:string ,name: string, action: string, seconds: number }[]}[]>  => {
+export const getHistory = async (list:string[]): Promise<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, seconds: number }[]}[]>  => {
     const chainInfo = await chainRepo.getChainInfo().toPromise();
     const height = chainInfo!.height.compact()
-    const dictList: {address: string, amount: string, history: { address:string , name: string, action: string, seconds: number }[]}[] = [];
+    const dictList: {address: string, amount: string, history: { signerAddress:string , name: string, action: string, seconds: number }[]}[] = [];
 
     for (let i = 0; i < list.length; i++) {
-        const dict = {} as {address: string, amount: string, history: { address:string , name: string, action: string, seconds: number }[]};
+        const dict = {} as {address: string, amount: string, history: { signerAddress:string , name: string, action: string, seconds: number }[]};
         dict["address"] = list[i]
         const accountInfo = await accountRepo.getAccountInfo(Address.createFromRawAddress(list[i])).toPromise();
         dict["amount"] = accountInfo!.mosaics[0].amount.toString()
-        const history: { address:string , name: string, action: string, seconds: number }[] = [];
+        const history: { signerAddress:string , name: string, action: string, seconds: number }[] = [];
         await txRepo.search({
          type:[
             TransactionType.AGGREGATE_COMPLETE,
@@ -130,7 +130,7 @@ export const getHistory = async (list:string[]): Promise<{address: string, amoun
                     history.push(
                         {
                             // @ts-ignore
-                            address:aggTx.innerTransactions[0].signer.address.address,
+                            signerAddress:aggTx.innerTransactions[0].signer.address.address,
                             // @ts-ignore
                             name:aggTx.innerTransactions[0].message.payload,
                             // @ts-ignore

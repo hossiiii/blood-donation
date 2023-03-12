@@ -24,7 +24,7 @@ function Infomation(): JSX.Element {
         flexDirection="column"
       >
         <Alert severity="warning" style={{fontSize:"11px"}} sx={{marginTop:3}}>
-          献血スタッフ、献血した血液を利用される施設の方は事前登録が必要になります。必要な情報をご記入の上、以下メールアドレスへご連絡下さい。
+          献血施設の方は事前登録が必要になります。必要な情報をご記入の上、以下メールアドレスへご連絡下さい。
         </Alert>
         <Typography component="div" variant="caption" sx={{marginTop:5}}>■ 施設名　（例：みやこでIT献血センター）</Typography>
         <Typography component="div" variant="caption" sx={{marginTop:1}}>■ 役割　（献血所 or 血液利用施設）</Typography>

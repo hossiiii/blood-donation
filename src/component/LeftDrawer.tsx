@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import InfoSharpIcon from '@mui/icons-material/InfoSharp';
 import HomeIcon from '@mui/icons-material/Home';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import SettingsApplicationsSharpIcon from '@mui/icons-material/SettingsApplicationsSharp';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useEffect, useState } from "react";
 
 function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): JSX.Element { //TODO: anyをなんとかする
@@ -15,18 +16,16 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): J
     } = props
 
     const navigate = useNavigate();
-    const [isRoleDoation, setIsRoleDoation] = useState<boolean>(false);
+    const [isRoleUser, setIsRoleUser] = useState<boolean>(false);
     const [isRoleCheck, setIsRoleCheck] = useState<boolean>(false);
-    const [isRoleUse, setIsRoleUse] = useState<boolean>(false);
 
     useEffect(() => {
         const getDataFromLocalStorage = () => {
           const data = localStorage.getItem('data')
           if (data) {
             const { role } = JSON.parse(data);
-            if (role === "donation") setIsRoleDoation(true);
+            if (role === "user") setIsRoleUser(true);
             else if (role === "check") setIsRoleCheck(true);
-            else if (role === "use") setIsRoleUse(true);
           }
         };
         getDataFromLocalStorage();
@@ -67,7 +66,7 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): J
                 <List>            
                     <ListItem disablePadding>
                     <ListItemButton
-                        disabled={!isRoleDoation}
+                        disabled={!isRoleUser}
                         onClick={ () => {
                         navigate('/donation')
                         setOpenLeftDrawer(false)
@@ -83,16 +82,32 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): J
                 <List>            
                     <ListItem disablePadding>
                     <ListItemButton
-                        disabled={!(isRoleCheck || isRoleUse)}
+                        disabled={!isRoleCheck}
                         onClick={ () => {
                         navigate('/record')
                         setOpenLeftDrawer(false)
                         }}
                     >
                         <ListItemIcon>
-                        <HistoryEduIcon/>
+                        <CheckCircleIcon/>
                         </ListItemIcon>
                         <ListItemText primary={"血液の記録 / 確認"} />
+                    </ListItemButton>
+                    </ListItem>
+                </List>
+                <List>            
+                    <ListItem disablePadding>
+                    <ListItemButton
+                        disabled={!isRoleUser}
+                        onClick={ () => {
+                        navigate('/receive')
+                        setOpenLeftDrawer(false)
+                        }}
+                    >
+                        <ListItemIcon>
+                        <FavoriteIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary={"受け取る"} />
                     </ListItemButton>
                     </ListItem>
                 </List>
@@ -107,7 +122,7 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): J
                         <ListItemIcon>
                         <InfoSharpIcon/>
                         </ListItemIcon>
-                        <ListItemText primary={"利用施設の方へ"} />
+                        <ListItemText primary={"献血施設の方へ"} />
                     </ListItemButton>
                     </ListItem>
                 </List>                

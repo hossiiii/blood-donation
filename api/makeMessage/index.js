@@ -4,9 +4,13 @@ module.exports = async function (context, req) {
   //関数実行時の引数
   const userPublicKey = (req.query.userPublicKey || (req.body && req.body.userPublicKey));
   const bloodAddressPlain = (req.query.bloodAddressPlain || (req.body && req.body.bloodAddressPlain));
+  const action = (req.query.action || (req.body && req.body.action));
+  const message = (req.query.message || (req.body && req.body.message));
 
   context.log({userPublicKey})
   context.log({bloodAddressPlain})
+  context.log({action})
+  context.log({message})
     
   const adminPrivateKey = "1E5EB2611CB54E75B3BEB3B66185CDA6E5EAAEB005B6AB7E05DD24AB5E08B1D9"; //管理者の暗号鍵はkeyvoltにあり、Functionsの環境変数として登録している。
   const NODE = "https://sym-test-04.opening-line.jp:3001"
@@ -72,7 +76,7 @@ module.exports = async function (context, req) {
     sym.Deadline.create(epochAdjustment),
     bloodAccount,
     [],
-    sym.PlainMessage.create(role),
+    sym.PlainMessage.create(action),
     networkType
   )
 
@@ -110,6 +114,8 @@ module.exports = async function (context, req) {
         "bloodAddressPlain": bloodAddressPlain,
         "name": name,
         "role": role,        
+        "action": action,        
+        "message": message,        
         "signedHash": signedHash,
         "signedPayload": signedPayload        
         }

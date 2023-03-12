@@ -8,7 +8,6 @@ import {QrCodeReader} from "../component/QrCodeReader";
 import {offlineSignature,getHistory,getDateTime} from "../hooks/useFunction";
 import axios from "axios";
 import { Bars } from 'react-loader-spinner'
-import { useQRCode } from 'next-qrcode';
 
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
@@ -21,7 +20,7 @@ import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-function Record(): JSX.Element {
+function Receive(): JSX.Element {
     //LeftDrawerの設定
     const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(false);
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
@@ -29,7 +28,6 @@ function Record(): JSX.Element {
 
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
     const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, seconds: number }[]}[]>([]);
-    const { Image } = useQRCode();
 
     const [isOpenQRCamera, setIsOpenQRCamera] = useState<boolean>(false);
 
@@ -42,8 +40,8 @@ function Record(): JSX.Element {
       const res = await axios.post(process.env.REACT_APP_API_MAKE_MESSAGE!, {
         userPublicKey: JSON.parse(localStorage.getItem('data')!).publicKey, //ユーザーの公開鍵
         bloodAddressPlain: bloodAddressPlain, //血液アカウントのアドレス
-        action: "check",
-        message: "",
+        action: "use",
+        message: "ありがとう",
       });
       console.log(res.data.data);
       setIsWaitingConfirmed(false);
@@ -55,7 +53,7 @@ function Record(): JSX.Element {
 
       setIsWaitingConfirmed(result);
       setIsFinishMessage(true)
-      setAlertsMessage(`献血された血液のチェックを記録しました`)
+      setAlertsMessage(`血液を受け取ったことを記録しました`)
       setSeverity("success")
       setOpenSnackbar(true)
     }
@@ -84,7 +82,7 @@ function Record(): JSX.Element {
           handleAgreeClick()
         }}
         dialogTitle={"献血された血液に対する記録"}
-        dialogMessage={`献血された血液に対して${JSON.parse(localStorage.getItem('data')!).name}という名前でチェックを記録しま すか？`}
+        dialogMessage={`献血された血液に対して${JSON.parse(localStorage.getItem('data')!).name}という名前で受け取ったことを記録しま すか？`}
       />
       <Header
         setOpenLeftDrawer={setOpenLeftDrawer}
@@ -108,11 +106,11 @@ function Record(): JSX.Element {
           flexDirection="column"
         >
           {(isWaitingConfirmed)?
-          (JSON.parse(localStorage.getItem('data')!).role === "check")?
+          (JSON.parse(localStorage.getItem('data')!).role !== "check")?
           (dictList.length===0)?
           <>
             <Typography component="div" variant="caption" sx={{marginBottom:1}}>
-              血液のQRコードを読み込み、情報の確認や記録を行います。
+              血液のQRコードを読み込み、情報の確認や受け取りの記録を行います。
             </Typography> 
             <Button
               variant="contained"
@@ -180,21 +178,18 @@ function Record(): JSX.Element {
             </Timeline>
             {(!isFinishMessage)?
             <>
-              <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血量に相違がなければ記録を行って下さい</Typography> 
+              <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血量に相違がなければ受け取り記録を行って下さい</Typography> 
               <Button
                 disabled={!isWaitingConfirmed}
                 variant="contained"
                 style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white", marginTop: "20px"}}
                 onClick={()=>{
                   //既に記録がされていれば、記録を行わない
-                  let flag = true
+                  let flag = false
                   dictList.forEach((data, index) => {
                     data.history.forEach((history, index) => {
-                      if(history.action === "use"){
-                        setAlertsMessage(`既に受け取りの記録があるのでチェックを行えません`)
-                        setSeverity("error")
-                        setOpenSnackbar(true)    
-                        flag = false //既に使われていたらチェックを行わない
+                      if(history.action === "check"){
+                        flag = true //チェックされていれば、記録可能
                       }
                       if(history.name === JSON.parse(localStorage.getItem('data')!).name){
                         setAlertsMessage(`この血液に対して既に${getDateTime(history.seconds)}前に記録を行っています`)
@@ -204,33 +199,25 @@ function Record(): JSX.Element {
                       }
                     } )                   
                   })
-                  if(flag) setOpenDialog(true)                    
+                  if(flag){
+                    setOpenDialog(true)
+                  }else{
+                    setAlertsMessage(`献血施設でチェックが行われていない血液なので受け取り記録ができません`)
+                    setSeverity("error")
+                    setOpenSnackbar(true)
+                  }
                 }}
-              >            
+              >
                 記録する
               </Button>
             </>            
             :
-            <>
-              <Typography component="div" variant="caption" sx={{marginBottom:1}}>QRコードを印刷して献血した血液とセットにして下さい</Typography> 
-              <Alert severity="warning" style={{fontSize:"11px"}} sx={{marginBottom:3}}>
-                既に印刷されている場合は必要ありません。
-              </Alert>
-              <Image
-                text={bloodAddressPlain}
-                options={{
-                  level: 'M',
-                  margin: 3,
-                  scale: 4,
-                  width: 70,
-                }}
-              />
-            </>
+            <></>
             }
           </>
           :
           <>
-            <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血施設者以外はメニューから「献血する」か「受け取る」を選んで血液QRコードを作成して下さい</Typography>          
+            <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血施設の方はメニューから「血液の記録/確認」を選んで血液QRコードを作成して下さい</Typography>          
           </>
           :
           <>
@@ -262,4 +249,4 @@ function Record(): JSX.Element {
     </>
     );
 };
-export default Record;
+export default Receive;

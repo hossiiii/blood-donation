@@ -52,7 +52,7 @@ export const QrCodeReader: FC<QrCodeReaderProps> = ({ onRead, setOpen }) => {
       mountedRef.current = false;
     };
     // @ts-ignore
-  }, [currentCamera]);
+  }, [currentCamera,onRead]);
 
 
   return <div style={{

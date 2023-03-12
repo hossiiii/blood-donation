@@ -1,4 +1,4 @@
-import {Account, Address, CosignatureSignedTransaction, CosignatureTransaction, KeyGenerator, MetadataType, RepositoryFactoryHttp, SignedTransaction, TransactionGroup, TransactionMapping, TransactionType} from 'symbol-sdk'
+import {Account, Address, CosignatureSignedTransaction, CosignatureTransaction, RepositoryFactoryHttp, SignedTransaction, TransactionGroup, TransactionMapping, TransactionType} from 'symbol-sdk'
 
 const NODE = "https://sym-test-04.opening-line.jp:3001"
 const repo = new RepositoryFactoryHttp(NODE);
@@ -6,7 +6,7 @@ const networkType = 152;
 const txRepo = repo.createTransactionRepository();
 const chainRepo = repo.createChainRepository();
 const accountRepo = repo.createAccountRepository();
-const metaRepo = repo.createMetadataRepository();
+// const metaRepo = repo.createMetadataRepository();
 // const nwRepo = repo.createNetworkRepository();
 // const epochAdjustment = 1667250467;
 const generationHash = "49D6E1CE276A85B70EAFE52349AACCA389302E7A9754BCF1221E79494FC665A4";

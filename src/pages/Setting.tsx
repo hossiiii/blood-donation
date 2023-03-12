@@ -33,7 +33,7 @@ function Setting(): JSX.Element {
     const handleExportAgreeClick = () => {
       setExportData(localStorage.getItem('data'))
       setOpenExportDialog(false)
-      setAlertsMessage("情報をエクスポートしました。画像を保存して下さい")
+      setAlertsMessage("アカウント情報をエクスポートしました。画像を保存して下さい")
       setSeverity("success")
       setOpenSnackbar(true)
     }
@@ -52,7 +52,7 @@ function Setting(): JSX.Element {
         localStorage.removeItem('data')
       }
       setOpenDeleteDialog(false)
-      setAlertsMessage("ブラウザ情報の削除を削除しました")
+      setAlertsMessage("ブラウザ上のアカウント情報の削除を削除しました")
       setSeverity("success")
       setOpenSnackbar(true)
     }
@@ -72,8 +72,8 @@ function Setting(): JSX.Element {
         handleAgreeClick={()=>{
           handleExportAgreeClick()
         }}
-        dialogTitle={"情報のエクスポート"}
-        dialogMessage={`情報をQRコードの状態でエクスポートします、よろしいですか？`}
+        dialogTitle={"アカウント情報のエクスポート"}
+        dialogMessage={`アカウント情報をQRコードの状態でエクスポートします、よろしいですか？`}
       />
       <AlertsDialog
         openDialog={openImportDialog}
@@ -81,8 +81,8 @@ function Setting(): JSX.Element {
         handleAgreeClick={()=>{
           handleImportAgreeClick()
         }}
-        dialogTitle={"情報のインポート"}
-        dialogMessage={`QRコードから情報をインポートします、よろしいですか？`}
+        dialogTitle={"アカウント情報のインポート"}
+        dialogMessage={`QRコードからアカウント情報をインポートします、よろしいですか？`}
       />
       <AlertsDialog
         openDialog={openDeleteDialog}
@@ -90,8 +90,8 @@ function Setting(): JSX.Element {
         handleAgreeClick={()=>{
           handleDeleteAgreeClick()
         }}
-        dialogTitle={"ブラウザ情報の削除"}
-        dialogMessage={`情報をエクスポートしていない限り、データをブラウザ上で復元できなくなります。ブラウザ上から、献血の情報を削除しますか？`}
+        dialogTitle={"ブラウザ上のアカウント情報の削除"}
+        dialogMessage={`アカウント情報をエクスポートしていない限り、データをブラウザ上で復元できなくなります。ブラウザ上から、アカウント情報を削除しますか？`}
       />
       <Header
         setOpenLeftDrawer={setOpenLeftDrawer}
@@ -128,7 +128,7 @@ function Setting(): JSX.Element {
                 >
                 <ListItemButton
                 >
-                <ListItemText primary={(localStorage.getItem('data')!==null)?"情報のエクスポート":"情報のインポート"} />
+                <ListItemText primary={(localStorage.getItem('data')!==null)?"アカウント情報のエクスポート":"アカウント情報のインポート"} />
                 </ListItemButton>
                 </ListItem>
                 {(localStorage.getItem('data')!==null)?
@@ -144,7 +144,7 @@ function Setting(): JSX.Element {
                 >
                 <ListItemButton
                 >
-                <ListItemText primary={"削除（ブラウザ上の情報）"} />
+                <ListItemText primary={"アカウント情報の削除（ブラウザ上の情報）"} />
                 </ListItemButton>
                 </ListItem>
                 :<></>}
@@ -164,7 +164,7 @@ function Setting(): JSX.Element {
               setIsOpenQRCamera(false);
               console.log(res.getText());
               localStorage.setItem('data', res.getText());
-              setAlertsMessage("情報をインポートしました。")
+              setAlertsMessage("アカウント情報をインポートしました。")
               setSeverity("success")
               setOpenSnackbar(true)
               navigate('/')

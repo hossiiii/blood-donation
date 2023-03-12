@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
@@ -253,7 +253,9 @@ function Home(): JSX.Element {
           (roleList.includes("check") || roleList.includes("use"))?
           <>
             <Typography component="div" variant="caption" sx={{marginBottom:5}}>施設名を入力しアカウントを作成して下さい。</Typography>
-            
+            <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:3}}>
+              アカウント情報が記載されているQRコードをお持ちの方は、設定から「アカウント情報のインポート」を行い、アカウントを作成して下さい。
+            </Alert>                        
             <FormControl>
               <TextField
                 label="施設名"
@@ -280,6 +282,9 @@ function Home(): JSX.Element {
           </>
           :
           <>
+            <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:3}}>
+              アカウント情報が記載されているQRコードをお持ちの方は、設定から「アカウント情報のインポート」を行い、アカウントを作成して下さい。
+            </Alert>            
             <Button
               disabled={!isWaitingConfirmed}
               variant="contained"

@@ -1,4 +1,4 @@
-import { Alert, Box, Button, FormControl, TextField, Typography } from "@mui/material";
+import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
@@ -32,7 +32,7 @@ function Home(): JSX.Element {
     const [placeName, setPlaceName] = useState<string | null>("");
     const [dictList, setDictList] = useState<{address: string, amount: string, history: { address:string ,name: string, action: string, seconds: number }[]}[]>([]);
     const [totalAmount, settTtalAmount] = useState<number>(0);
-    const { Canvas } = useQRCode();
+    const { Image } = useQRCode();
 
     useEffect(() => {
         (async () => {
@@ -168,7 +168,7 @@ function Home(): JSX.Element {
               </CardContent>
             </CardActionArea>
           </Card>
-          <Typography component="div" variant="caption" sx={{fontSize:1,marginTop:1}}>* チェックが行われた血液だけが total blood として計算されます</Typography>          
+          <Typography component="div" variant="caption" sx={{fontSize:10,marginTop:1}}>* チェックが行われた血液だけが total blood として計算されます</Typography>          
           {dictList.map((dict,index)=> {
             return (              
               <Box
@@ -180,7 +180,7 @@ function Home(): JSX.Element {
                 marginTop={3}
               >
                 <Typography component="div" variant="caption" sx={{fontSize:11 ,marginBottom:1}}>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </Typography>
-                <Canvas
+                <Image
                   text={dict.address}
                   options={{
                     level: 'M',
@@ -280,10 +280,6 @@ function Home(): JSX.Element {
           </>
           :
           <>
-            <Typography component="div" variant="caption" sx={{marginBottom:3}}>献血者の方はこのままアカウントを作成して下さい。</Typography>
-            <Alert severity="warning" style={{fontSize:"11px"}} sx={{marginBottom:3}}>
-              献血スタッフ、献血した血液を利用される施設の方は事前にログインが必要になります。
-            </Alert>
             <Button
               disabled={!isWaitingConfirmed}
               variant="contained"

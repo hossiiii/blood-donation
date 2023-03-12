@@ -19,7 +19,7 @@ function Donation(): JSX.Element {
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
     const [isWaitingConfirmed2, setIsWaitingConfirmed2] = useState<boolean>(true);
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
-    const { Canvas } = useQRCode();
+    const { Image } = useQRCode();
 
     const [amount, setAmount] = useState<string>("200");
 
@@ -142,7 +142,7 @@ function Donation(): JSX.Element {
           :
           <>
             <Typography component="div" variant="caption" sx={{marginBottom:3}}>表示されたQRコードを献血スタッフ側で読み込んでもらい献血の証明を行って下さい。</Typography>
-            <Canvas
+            <Image
               text={bloodAddressPlain}
               options={{
                 level: 'M',

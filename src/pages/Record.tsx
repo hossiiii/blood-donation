@@ -29,7 +29,7 @@ function Record(): JSX.Element {
 
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
     const [dictList, setDictList] = useState<{address: string, amount: string, history: { address:string ,name: string, action: string, seconds: number }[]}[]>([]);
-    const { Canvas } = useQRCode();
+    const { Image } = useQRCode();
 
     const [isOpenQRCamera, setIsOpenQRCamera] = useState<boolean>(false);
 
@@ -214,7 +214,7 @@ function Record(): JSX.Element {
               <Alert severity="warning" style={{fontSize:"11px"}} sx={{marginBottom:3}}>
                 既に印刷されている場合は必要ありません。
               </Alert>
-              <Canvas
+              <Image
                 text={bloodAddressPlain}
                 options={{
                   level: 'M',

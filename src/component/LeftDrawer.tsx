@@ -1,9 +1,10 @@
 import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import LoginIcon from '@mui/icons-material/Login';
+import InfoSharpIcon from '@mui/icons-material/InfoSharp';
 import HomeIcon from '@mui/icons-material/Home';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import SettingsApplicationsSharpIcon from '@mui/icons-material/SettingsApplicationsSharp';
 import { useEffect, useState } from "react";
 
 function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): JSX.Element { //TODO: anyをなんとかする
@@ -98,6 +99,36 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): J
                 <List>            
                     <ListItem disablePadding>
                     <ListItemButton
+                        onClick={ () => {
+                        navigate('/infomation')
+                        setOpenLeftDrawer(false)
+                        }}
+                    >
+                        <ListItemIcon>
+                        <InfoSharpIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary={"利用施設の方へ"} />
+                    </ListItemButton>
+                    </ListItem>
+                </List>                
+                <List>            
+                    <ListItem disablePadding>
+                    <ListItemButton
+                        onClick={ () => {
+                        navigate('/setting')
+                        setOpenLeftDrawer(false)
+                        }}
+                    >
+                        <ListItemIcon>
+                        <SettingsApplicationsSharpIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary={"設定"} />
+                    </ListItemButton>
+                    </ListItem>
+                </List>    
+                {/* <List> 
+                    <ListItem disablePadding>
+                    <ListItemButton
                         disabled={localStorage.getItem('data') !== null}
                         onClick={ () => {
                         navigate('/login')
@@ -110,7 +141,7 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): J
                         <ListItemText primary={"SNS認証"} />
                     </ListItemButton>
                     </ListItem>
-                </List>
+                </List> */}
             </Box>
             </Drawer>
         </>

@@ -1,7 +1,8 @@
 import { Alert, Box, Button,Typography } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
+import TimeLine from "../component/TimeLine";
 import AlertsDialog from "../component/AlertsDialog";
 import AlertsSnackbar from "../component/AlertsSnackbar";
 import {QrCodeReader} from "../component/QrCodeReader";
@@ -9,17 +10,6 @@ import {offlineSignature,getHistory,getDateTime} from "../hooks/useFunction";
 import axios from "axios";
 import { Bars } from 'react-loader-spinner'
 import { useQRCode } from 'next-qrcode';
-
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import BloodtypeIcon from '@mui/icons-material/Bloodtype';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 
 function Record(): JSX.Element {
     //LeftDrawerの設定
@@ -133,52 +123,9 @@ function Record(): JSX.Element {
           </>
           :
           <>
-            <Typography component="div" variant="h6">{`献血量　${dictList[0].amount}(ml)`}</Typography>
-            <Timeline position="alternate">
-            {
-              dictList[0].history.map((history, index) => (
-                <React.Fragment key={index}>
-                    <TimelineItem>
-                      <TimelineOppositeContent
-                        sx={{ m: 'auto 0' }}
-                        align="right"
-                        variant="body2"
-                        color="text.secondary"
-                      >
-                        {`${getDateTime(history.seconds)} ago`}
-                      </TimelineOppositeContent>
-                      <TimelineSeparator>
-                        {(history.action==="donation")?
-                          <TimelineDot  sx={{ colr:'white', backgroundColor: 'orangered' }}>
-                            <BloodtypeIcon sx={{ colr:'white', backgroundColor: 'orangered' }}/>
-                          </TimelineDot>
-                          :(history.action==="check")?
-                          <TimelineDot  sx={{ colr:'white', backgroundColor: 'lightseagreen' }}>
-                            <CheckCircleIcon sx={{ colr:'white', backgroundColor: 'lightseagreen' }}/>
-                          </TimelineDot>
-                          :(history.action==="use")?
-                          <TimelineDot  sx={{ colr:'white', backgroundColor: 'salmon' }}>
-                            <FavoriteIcon sx={{ colr:'white', backgroundColor: 'salmon' }}/>
-                          </TimelineDot>
-                          :<></>                      
-                        }
-                        {
-                          (history.action!=="use")?
-                          <TimelineConnector />:<></>                          
-                        }
-                      </TimelineSeparator>
-                      <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span">
-                        {`${history.action}`}
-                        </Typography>
-                        <Typography component="div" variant="caption">{`${history.name}`}</Typography>
-                        <Typography component="div" variant="caption" color="text.secondary">{`${history.message}`}</Typography>
-                      </TimelineContent>
-                    </TimelineItem>
-                </React.Fragment>
-              ))
-            }
-            </Timeline>
+            <TimeLine
+              dict={dictList[0]}
+            />
             {(!isFinishMessage)?
             <>
               <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血量に相違がなければ記録を行って下さい</Typography> 

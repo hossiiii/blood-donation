@@ -1,5 +1,5 @@
-import { Box, Button,Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button,FormControl,FormHelperText,TextField,Typography } from "@mui/material";
+import { useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
 import AlertsDialog from "../component/AlertsDialog";
@@ -8,25 +8,15 @@ import {QrCodeReader} from "../component/QrCodeReader";
 import {offlineSignature,getHistory,getDateTime} from "../hooks/useFunction";
 import axios from "axios";
 import { Bars } from 'react-loader-spinner'
-
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import BloodtypeIcon from '@mui/icons-material/Bloodtype';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import TimeLine from "../component/TimeLine";
 
 function Receive(): JSX.Element {
     //LeftDrawerの設定
     const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(false);
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
     const [isFinishMessage, setIsFinishMessage] = useState<boolean>(false);
-
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
+    const [message, setMessage] = useState<string>("");
     const [dictList, setDictList] = useState<{address: string, amount: string, history: { signerAddress:string ,name: string, action: string, message: string, seconds: number }[]}[]>([]);
 
     const [isOpenQRCamera, setIsOpenQRCamera] = useState<boolean>(false);
@@ -41,7 +31,7 @@ function Receive(): JSX.Element {
         userPublicKey: JSON.parse(localStorage.getItem('data')!).publicKey, //ユーザーの公開鍵
         bloodAddressPlain: bloodAddressPlain, //血液アカウントのアドレス
         action: "use",
-        message: "ありがとう",
+        message: message,
       });
       console.log(res.data.data);
       setIsWaitingConfirmed(false);
@@ -132,54 +122,26 @@ function Receive(): JSX.Element {
           :
           <>
             <Typography component="div" variant="h6">{`献血量　${dictList[0].amount}(ml)`}</Typography>
-            <Timeline position="alternate">
-            {
-              dictList[0].history.map((history, index) => (
-                <React.Fragment key={index}>
-                    <TimelineItem>
-                      <TimelineOppositeContent
-                        sx={{ m: 'auto 0' }}
-                        align="right"
-                        variant="body2"
-                        color="text.secondary"
-                      >
-                        {`${getDateTime(history.seconds)} ago`}
-                      </TimelineOppositeContent>
-                      <TimelineSeparator>
-                        {(history.action==="donation")?
-                          <TimelineDot  sx={{ colr:'white', backgroundColor: 'orangered' }}>
-                            <BloodtypeIcon sx={{ colr:'white', backgroundColor: 'orangered' }}/>
-                          </TimelineDot>
-                          :(history.action==="check")?
-                          <TimelineDot  sx={{ colr:'white', backgroundColor: 'lightseagreen' }}>
-                            <CheckCircleIcon sx={{ colr:'white', backgroundColor: 'lightseagreen' }}/>
-                          </TimelineDot>
-                          :(history.action==="use")?
-                          <TimelineDot  sx={{ colr:'white', backgroundColor: 'salmon' }}>
-                            <FavoriteIcon sx={{ colr:'white', backgroundColor: 'salmon' }}/>
-                          </TimelineDot>
-                          :<></>                      
-                        }
-                        {
-                          (history.action!=="use")?
-                          <TimelineConnector />:<></>                          
-                        }
-                      </TimelineSeparator>
-                      <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span">
-                        {`${history.action}`}
-                        </Typography>
-                        <Typography component="div" variant="caption">{`${history.name}`}</Typography>
-                        <Typography component="div" variant="caption" color="text.secondary">{`${history.message}`}</Typography>
-                      </TimelineContent>
-                    </TimelineItem>
-                </React.Fragment>
-              ))
-            }
-            </Timeline>
+            <TimeLine
+              dict={dictList[0]}
+            />
             {(!isFinishMessage)?
             <>
-              <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血量に相違がなければ受け取り記録を行って下さい</Typography> 
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <TextField
+                  label="公開メッセージ(300字まで)"
+                  multiline
+                  maxRows={7}
+                  style={{width: "85vw", marginTop: "10px"}}
+                  variant="outlined"            
+                  type={'text'}
+                  value={message}
+                  onChange={(e)=>{
+                    setMessage(e.target.value)
+                  }}
+                />
+                <FormHelperText>血液のを提供してくれた人に一言メッセージをお願いします</FormHelperText>
+              </FormControl>
               <Button
                 disabled={!isWaitingConfirmed}
                 variant="contained"
@@ -187,19 +149,20 @@ function Receive(): JSX.Element {
                 onClick={()=>{
                   //既に記録がされていれば、記録を行わない
                   let flag = false
-                  dictList.forEach((data, index) => {
-                    data.history.forEach((history, index) => {
-                      if(history.action === "check"){
+                  for (let i = 0; i < dictList.length; i++) {
+                    for (let j = 0; j < dictList[i].history.length; j++) {
+                      if(dictList[i].history[j].action === "check"){
                         flag = true //チェックされていれば、記録可能
                       }
-                      if(history.name === JSON.parse(localStorage.getItem('data')!).name){
-                        setAlertsMessage(`この血液に対して既に${getDateTime(history.seconds)}前に記録を行っています`)
+                      if(dictList[i].history[j].name === JSON.parse(localStorage.getItem('data')!).name){
+                        setAlertsMessage(`この血液に対して既に${getDateTime(dictList[i].history[j].seconds)}前に記録を行っています`)
                         setSeverity("error")
                         setOpenSnackbar(true)
-                        flag = false                          
+                        flag = false
+                        return                
                       }
-                    } )                   
-                  })
+                    }
+                  }
                   if(flag){
                     setOpenDialog(true)
                   }else{

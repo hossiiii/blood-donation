@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, InputLabel, Typography } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
@@ -19,6 +19,7 @@ function Donation(): JSX.Element {
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
     const [isWaitingConfirmed2, setIsWaitingConfirmed2] = useState<boolean>(true);
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
+    const [message, setMessage] = useState<string>("");
     const { Image } = useQRCode();
 
     const [amount, setAmount] = useState<string>("200");
@@ -47,7 +48,7 @@ function Donation(): JSX.Element {
         userPublicKey: JSON.parse(localStorage.getItem('data')!).publicKey, //ユーザーの公開鍵
         bloodAddressPlain: account.address, //血液アカウントのアドレス
         action: "donation",
-        message: "テスト",
+        message: message,
       });
       console.log(res2.data.data);
       setIsWaitingConfirmed2(false);
@@ -130,12 +131,35 @@ function Donation(): JSX.Element {
               <FormHelperText>200ml か 400ml から選択</FormHelperText>
             </FormControl>
 
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <TextField
+              label="公開メッセージ(300字まで)"
+              multiline
+              maxRows={7}
+              style={{width: "85vw", marginTop: "10px"}}
+              variant="outlined"            
+              type={'text'}
+              value={message}
+              onChange={(e)=>{
+                setMessage(e.target.value)
+              }}
+            />
+            <FormHelperText>受け取る人に一言メッセージをお願いします</FormHelperText>
+          </FormControl>
+
             <Button
               disabled={!isWaitingConfirmed}
               variant="contained"
               style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white", marginTop: "20px"}}
               onClick={() => {
-                setOpenDialog(true)
+                //ここで入力チェック
+                if(message.length > 300){
+                  setAlertsMessage("300文字を超えるメッセージは記録できません。")
+                  setSeverity("error")
+                  setOpenSnackbar(true)
+                }else{
+                  setOpenDialog(true)
+                }
               }}
             >
               QRコードを発行する

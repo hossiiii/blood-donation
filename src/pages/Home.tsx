@@ -1,10 +1,11 @@
 import { Alert, Box, Button, FormControl, TextField, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
+import TimeLine from "../component/TimeLine";
 import AlertsDialog from "../component/AlertsDialog";
 import AlertsSnackbar from "../component/AlertsSnackbar";
-import {createAccount,offlineSignature,getBloodList,getHistory,getDateTime} from "../hooks/useFunction";
+import {createAccount,offlineSignature,getBloodList,getHistory} from "../hooks/useFunction";
 import axios from "axios";
 import { Bars } from 'react-loader-spinner'
 import Card from '@mui/material/Card';
@@ -12,18 +13,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
 import { useQRCode } from 'next-qrcode';
-
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import BloodtypeIcon from '@mui/icons-material/Bloodtype';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-
 function Home(): JSX.Element {
     //LeftDrawerの設定
     const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(false);
@@ -196,54 +185,9 @@ function Home(): JSX.Element {
                     width: 70,
                   }}
                 />
-                <Timeline position="alternate">
-                {
-                  dict.history.map((history, index) => (
-                    <React.Fragment key={index}>
-                        <TimelineItem>
-                          <TimelineOppositeContent
-                            sx={{ m: 'auto 0' }}
-                            align="right"
-                            variant="body2"
-                            color="text.secondary"
-                          >
-                            {(history.action==="donation")?`${getDateTime(history.seconds)} ago  ${dict.amount}(ml)`:`${getDateTime(history.seconds)} ago`}
-                          </TimelineOppositeContent>
-
-                          <TimelineSeparator>
-                            {(history.action==="donation")?
-                              <TimelineDot  sx={{ colr:'white', backgroundColor: 'orangered' }}
-                                onClick={() => {window.open(`https://testnet.symbol.fyi/accounts/${dict.address}`, '_blank')}}
-                              >
-                                <BloodtypeIcon sx={{ colr:'white', backgroundColor: 'orangered' }}/>
-                              </TimelineDot>
-                              :(history.action==="check")?
-                              <TimelineDot  sx={{ colr:'white', backgroundColor: 'lightseagreen' }}>
-                                <CheckCircleIcon sx={{ colr:'white', backgroundColor: 'lightseagreen' }}/>
-                              </TimelineDot>
-                              :(history.action==="use")?
-                              <TimelineDot  sx={{ colr:'white', backgroundColor: 'salmon' }}>
-                                <FavoriteIcon sx={{ colr:'white', backgroundColor: 'salmon' }}/>
-                              </TimelineDot>
-                              :<></>                      
-                            }
-                            {
-                              (history.action!=="use")?
-                              <TimelineConnector />:<></>                          
-                            }
-                          </TimelineSeparator>
-                          <TimelineContent sx={{ py: '12px', px: 2 }}>
-                            <Typography variant="h6" component="span">
-                            {`${history.action}`}
-                            </Typography>
-                            <Typography component="div" variant="caption">{`${history.name}`}</Typography>
-                            <Typography component="div" variant="caption" color="text.secondary">{`${history.message}`}</Typography>
-                          </TimelineContent>
-                        </TimelineItem>
-                    </React.Fragment>
-                  ))
-                }
-                </Timeline>
+                <TimeLine
+                dict={dict}
+                />
               </Box>
             );
           })}

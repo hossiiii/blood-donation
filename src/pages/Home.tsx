@@ -252,8 +252,8 @@ function Home(): JSX.Element {
           {(isWaitingConfirmed)?
           (roleList.includes("check") || roleList.includes("use"))?
           <>
-            <img src="top.png" width={"300px"} alt="top"/>
-            <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:3}}>
+            <img src="top.png" width={"250px"} alt="top"/>
+            <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:2}}>
               アカウント情報が記載されているQRコードをお持ちの方は、設定から「アカウント情報のインポート」を行い、アカウントを作成して下さい。
             </Alert>                        
             <Typography component="div" variant="caption" sx={{marginBottom:5}}>施設名を入力しアカウントを作成して下さい。</Typography>
@@ -283,8 +283,8 @@ function Home(): JSX.Element {
           </>
           :
           <>
-            <img src="top.png" width={"300px"} alt="top"/>
-            <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:5}}>
+            <img src="top.png" width={"250px"} alt="top"/>
+            <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:2}}>
               アカウント情報が記載されているQRコードをお持ちの方は、設定から「アカウント情報のインポート」を行い、アカウントを作成して下さい。
             </Alert>            
             <Button

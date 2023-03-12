@@ -138,20 +138,25 @@ export const getHistory = async (list:string[]): Promise<{address: string, amoun
     return dictList.flatMap((dict)=>dict);
 };
 
-
-export const getMyBloodList = async (userAddress:string): Promise<string[]>  => {
-    const list = []
-    const scopedMetadataKeyName = KeyGenerator.generateUInt64Key("blood-donation-name").toHex()
-    const metadataEntriesName = await metaRepo.search({
-        metadataType: MetadataType.Account,
-        scopedMetadataKey: scopedMetadataKeyName,
-        pageNumber: 1,
-        pageSize: 100
-    }).toPromise()
-    for (let index = 0; index < metadataEntriesName!.data.length; index++) {
-        if(metadataEntriesName!.data[index].metadataEntry.value === userAddress) {
-            list.push(metadataEntriesName!.data[index].metadataEntry.targetAddress.plain())
-        }
-    }
+export const getBloodList = async (userAddress:string): Promise<string[]>  => {
+    const list : string[] = []
+    await txRepo.search({
+        type:[
+           TransactionType.AGGREGATE_COMPLETE,
+           TransactionType.AGGREGATE_BONDED
+        ],
+         group: TransactionGroup.Confirmed,
+         address:Address.createFromRawAddress(userAddress),
+         pageSize:100
+       }).toPromise().then(async(x)=>{
+           for (let idx = 0; idx < x!.data.length; idx++) {
+               const aggTx = await txRepo.getTransaction(x!.data[idx]!.transactionInfo?.hash!,TransactionGroup.Confirmed,).toPromise()
+               // @ts-ignore
+               if(aggTx!.innerTransactions[0].type === 16724){
+                // @ts-ignore
+                list.push(aggTx.innerTransactions[0].recipientAddress.address)
+               }
+           }
+       });
     return list;
 };

@@ -51,7 +51,7 @@ function Record(): JSX.Element {
 
     const handleAgreeClick = async () => {
       setOpenDialog(false)
-      const res = await axios.post('/api/makeMessage', {
+      const res = await axios.post(process.env.REACT_APP_API_MAKE_MESSAGE!, {
         userPublicKey: JSON.parse(localStorage.getItem('data')!).publicKey, //ユーザーの公開鍵
         bloodAddressPlain: bloodAddressPlain, //血液アカウントのアドレス
       });

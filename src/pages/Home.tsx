@@ -4,7 +4,7 @@ import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
 import AlertsDialog from "../component/AlertsDialog";
 import AlertsSnackbar from "../component/AlertsSnackbar";
-import {createAccount,offlineSignature,getMyBloodList,getHistory,getDateTime} from "../hooks/useFunction";
+import {createAccount,offlineSignature,getBloodList,getHistory,getDateTime} from "../hooks/useFunction";
 import axios from "axios";
 import { Bars } from 'react-loader-spinner'
 import Card from '@mui/material/Card';
@@ -46,7 +46,7 @@ function Home(): JSX.Element {
           }
           //履歴の取得
           if(localStorage.getItem('data')){
-            const bloodList = await getMyBloodList(JSON.parse(localStorage.getItem('data')!).address)
+            const bloodList = await getBloodList(JSON.parse(localStorage.getItem('data')!).address)
             const list = await getHistory(bloodList.reverse())
             setDictList(list)
             console.log(list)
@@ -66,7 +66,7 @@ function Home(): JSX.Element {
       if(roleList.includes("check")) role = "check"
       if(roleList.includes("use")) role = "use"      
       const name = placeName
-      const res = await axios.post('/api/makeAccount', {
+      const res = await axios.post(process.env.REACT_APP_API_MAKE_ACCOUNT!, {
         transfer_amount: 0,
         userPublicKey: account.publicKey,
         role: role,

@@ -43,7 +43,7 @@ function Donation(): JSX.Element {
       setOpenDialog(false)
       let role = "blood"
       const name = `${JSON.parse(localStorage.getItem('data')!).address}`
-      const res = await axios.post('/api/makeAccount', {
+      const res = await axios.post(process.env.REACT_APP_API_MAKE_ACCOUNT!, {
         transfer_amount: amount,
         userPublicKey: account.publicKey,
         role: role,
@@ -55,7 +55,7 @@ function Donation(): JSX.Element {
       setIsWaitingConfirmed(result);
       //ここに血液アカウントに対して、メッセージを送る処理を書く
 
-      const res2 = await axios.post('/api/makeMessage', {
+      const res2 = await axios.post(process.env.REACT_APP_API_MAKE_MESSAGE!, {
         userPublicKey: JSON.parse(localStorage.getItem('data')!).publicKey, //ユーザーの公開鍵
         bloodAddressPlain: account.address, //血液アカウントのアドレス
       });

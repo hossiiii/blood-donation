@@ -220,7 +220,7 @@ function Record(): JSX.Element {
                   level: 'M',
                   margin: 3,
                   scale: 4,
-                  width: 200,
+                  width: 70,
                 }}
               />
             </>:<></>           

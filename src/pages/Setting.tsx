@@ -157,6 +157,10 @@ function Setting(): JSX.Element {
                   margin: 3,
                   scale: 4,
                   width: 200,
+                  color: {
+                    dark: '#808000',
+                    light: '#FFFFFF',
+                  },          
               }}
           />
             :<></>}

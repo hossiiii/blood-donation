@@ -148,7 +148,7 @@ function Donation(): JSX.Element {
                 level: 'M',
                 margin: 3,
                 scale: 4,
-                width: 200,
+                width: 70,
               }}
             />
             <Typography component="div" variant="caption" sx={{marginTop:1}}>{`${JSON.parse(localStorage.getItem('data')!).address}`}</Typography>          

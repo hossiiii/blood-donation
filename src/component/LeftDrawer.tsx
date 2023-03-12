@@ -1,20 +1,37 @@
 import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LoginIcon from '@mui/icons-material/Login';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import { useEffect, useState } from "react";
 
-function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any,roleList:string[]}): JSX.Element { //TODO: anyをなんとかする
+function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any}): JSX.Element { //TODO: anyをなんとかする
   //LeftDrawerの設定
     const {
         openLeftDrawer,
         setOpenLeftDrawer,
-        roleList
     } = props
 
     const navigate = useNavigate();
+    const [isRoleDoation, setIsRoleDoation] = useState<boolean>(false);
+    const [isRoleCheck, setIsRoleCheck] = useState<boolean>(false);
+    const [isRoleUse, setIsRoleUse] = useState<boolean>(false);
+
+    useEffect(() => {
+        const getDataFromLocalStorage = () => {
+          const data = localStorage.getItem('data')
+          if (data) {
+            const { role } = JSON.parse(data);
+            if (role === "donation") setIsRoleDoation(true);
+            else if (role === "check") setIsRoleCheck(true);
+            else if (role === "use") setIsRoleUse(true);
+          }
+        };
+        getDataFromLocalStorage();
+    }, [openLeftDrawer]);
+    
+
     return (
         <>
             <Drawer
@@ -49,7 +66,7 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any,role
                 <List>            
                     <ListItem disablePadding>
                     <ListItemButton
-                        disabled={(roleList.includes("check") || roleList.includes("use"))}
+                        disabled={!isRoleDoation}
                         onClick={ () => {
                         navigate('/donation')
                         setOpenLeftDrawer(false)
@@ -65,7 +82,7 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any,role
                 <List>            
                     <ListItem disablePadding>
                     <ListItemButton
-                        disabled={!(roleList.includes("check") || roleList.includes("use"))}
+                        disabled={!(isRoleCheck || isRoleUse)}
                         onClick={ () => {
                         navigate('/record')
                         setOpenLeftDrawer(false)
@@ -81,18 +98,16 @@ function LeftDrawer(props: { openLeftDrawer: boolean ,setOpenLeftDrawer:any,role
                 <List>            
                     <ListItem disablePadding>
                     <ListItemButton
+                        disabled={localStorage.getItem('data') !== null}
                         onClick={ () => {
                         navigate('/login')
                         setOpenLeftDrawer(false)
                         }}
                     >
                         <ListItemIcon>
-                        {(roleList?.length === 0) ?
-                        <LoginIcon/>:
-                        <ExitToAppIcon/>                            
-                        }
+                        <LoginIcon/>  
                         </ListItemIcon>
-                        <ListItemText primary={(roleList?.length === 0)?"SNS認証":"ログアウト"} />
+                        <ListItemText primary={"SNS認証"} />
                     </ListItemButton>
                     </ListItem>
                 </List>

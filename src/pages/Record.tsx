@@ -1,5 +1,5 @@
 import { Alert, Box, Button,Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
 import AlertsDialog from "../component/AlertsDialog";
@@ -24,7 +24,6 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 function Record(): JSX.Element {
     //LeftDrawerの設定
     const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(false);
-    const [roleList, setRoleList] = useState<string[]>([]);
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
     const [isFinishMessage, setIsFinishMessage] = useState<boolean>(false);
 
@@ -38,17 +37,6 @@ function Record(): JSX.Element {
       setIsOpenQRCamera(true);
     };
   
-    useEffect(() => {
-        (async () => {
-          const ret = await fetch('/.auth/me');
-          const me = await ret.json();
-          if(me.clientPrincipal){
-            setRoleList(me.clientPrincipal.userRoles);            
-            console.log(me.clientPrincipal.userRoles)
-          }
-        })()
-    }, []);
-
     const handleAgreeClick = async () => {
       setOpenDialog(false)
       const res = await axios.post(process.env.REACT_APP_API_MAKE_MESSAGE!, {
@@ -106,7 +94,6 @@ function Record(): JSX.Element {
       <LeftDrawer
         openLeftDrawer={openLeftDrawer}
         setOpenLeftDrawer={setOpenLeftDrawer}
-        roleList={roleList}
       />
       <Box 
         sx={{ p: 3 }}
@@ -123,16 +110,15 @@ function Record(): JSX.Element {
           flexDirection="column"
         >
           {(isWaitingConfirmed)?
-          (roleList.includes("check") || roleList.includes("use"))?
+          (JSON.parse(localStorage.getItem('data')!).role === "check" || JSON.parse(localStorage.getItem('data')!).role === "use")?
           (dictList.length===0)?
           <>
             <Typography component="div" variant="caption" sx={{marginBottom:1}}>
               血液のQRコードを読み込み、情報の確認や記録を行います。
             </Typography> 
             <Button
-              disabled={!isWaitingConfirmed}
               variant="contained"
-              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: 'orangered', color: "white", marginTop: "20px"}}
+              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white", marginTop: "20px"}}
               onClick={clickOpenQrReader}
             >
               QRコードを読み込む
@@ -198,8 +184,9 @@ function Record(): JSX.Element {
             <>
               <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血量に相違がなければ記録を行って下さい</Typography> 
               <Button
+                disabled={!isWaitingConfirmed}
                 variant="contained"
-                style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: 'orangered', color: "white", marginTop: "20px"}}
+                style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white", marginTop: "20px"}}
                 onClick={()=>{
                   //既に記録がされていれば、記録を行わない
                   let flag = true

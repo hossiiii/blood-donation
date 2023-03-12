@@ -52,8 +52,7 @@ function Home(): JSX.Element {
             console.log(list)
             let total = 0
             list.forEach((item) => {
-              if(item.history.length > 1) total = total + Number(item.amount)              
-            
+              if(item.history.length > 1) total = total + Number(item.amount)
             })
             settTtalAmount(total)
           }
@@ -88,6 +87,7 @@ function Home(): JSX.Element {
       setAlertsMessage((roleList.includes("check") || roleList.includes("use"))?"施設アカウントが作成されました":"献血者アカウントが作成されました")
       setSeverity("success")
       setOpenSnackbar(true)
+      if(roleList.includes("check") || roleList.includes("use")) window.location.replace(`${window.location.href}.auth/logout`)
     }
 
     //SnackBarの設定
@@ -123,7 +123,6 @@ function Home(): JSX.Element {
       <LeftDrawer
         openLeftDrawer={openLeftDrawer}
         setOpenLeftDrawer={setOpenLeftDrawer}
-        roleList={roleList}
       />
       <Box 
         sx={{ p: 3 }}
@@ -157,13 +156,9 @@ function Home(): JSX.Element {
                 <Typography variant="body2" color="text.secondary">
                   your role is {`${JSON.parse(localStorage.getItem('data')!).role}`}
                 </Typography>
-                {
-                  (JSON.parse(localStorage.getItem('data')!).role === "donation")?
-                  <Typography variant="body2" color="text.secondary" sx={{marginTop:1}}>
+                <Typography variant="body2" color="text.secondary" sx={{marginTop:1}}>
                     your total {totalAmount} ml blood {`${JSON.parse(localStorage.getItem('data')!).role}`}
-                  </Typography>
-                  :<></>
-                }
+                </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{marginTop:1}}>
                   your history is write by blockchain
                 </Typography>
@@ -173,22 +168,18 @@ function Home(): JSX.Element {
               </CardContent>
             </CardActionArea>
           </Card>
-          {
-            (JSON.parse(localStorage.getItem('data')!).role === "donation")?
-            <Typography component="div" variant="caption" sx={{fontSize:1,marginTop:1}}>* チェックが行われた血液だけが total blood として計算されます</Typography>          
-            :<></>
-          }
+          <Typography component="div" variant="caption" sx={{fontSize:1,marginTop:1}}>* チェックが行われた血液だけが total blood として計算されます</Typography>          
           {dictList.map((dict,index)=> {
-            return (
-              
+            return (              
               <Box
+                key={index}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
                 flexDirection="column"
                 marginTop={3}
               >
-                {/* <Typography component="div" variant="caption" sx={{fontSize:11 ,marginBottom:1 , marginTop:3}}>{`${dict.address}`}</Typography> */}
+                <Typography component="div" variant="caption" sx={{fontSize:11 ,marginBottom:1}}>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </Typography>
                 <Canvas
                   text={dict.address}
                   options={{
@@ -279,7 +270,7 @@ function Home(): JSX.Element {
             <Button
               disabled={!isWaitingConfirmed}
               variant="contained"
-              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: 'orangered', color: "white"}}
+              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white"}}
               onClick={() => {
                 setOpenDialog(true)
               }}
@@ -296,7 +287,7 @@ function Home(): JSX.Element {
             <Button
               disabled={!isWaitingConfirmed}
               variant="contained"
-              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: 'orangered', color: "white"}}
+              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white"}}
               onClick={() => {
                 setPlaceName("donor")
                 setOpenDialog(true)

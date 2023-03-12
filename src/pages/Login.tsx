@@ -1,4 +1,4 @@
-import { Box, Button, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { Alert, Box, Button, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
@@ -30,7 +30,6 @@ function Login(): JSX.Element {
       <LeftDrawer
         openLeftDrawer={openLeftDrawer}
         setOpenLeftDrawer={setOpenLeftDrawer}
-        roleList={roleList}
       />
       <Box 
         sx={{ p: 3 }}
@@ -41,9 +40,12 @@ function Login(): JSX.Element {
       >
         {(roleList?.length === 0) ?
           <>
-          <Typography variant="caption">
-            事前にメールで招待した同じ方法でSNS認証を行って下さい。
+          <Typography variant="caption" sx={{marginBottom:3}}>
+            献血施設もしくは血液を利用する施設のユーザはアカウント作成をするために、事前にメールで招待した同じ方法でSNS認証を行う必要があります。
           </Typography>
+          <Alert severity="info" style={{fontSize:"11px"}} sx={{marginBottom:3}}>
+              SNS認証は、アカウントを作成する初回のみ行う必要があります。
+            </Alert>
           <Box
           mt={5}
           >
@@ -97,7 +99,7 @@ function Login(): JSX.Element {
         :
         <>
           <Typography variant="caption">
-            ログアウトをするとSNS認証が解除されます。SNS認証が解除されても、ブラウザ上およびブロックチェーン上の記録は残ります。ブラウザ上のデータを削除する場合は、設定から削除して下さい。
+            ログアウトをするとSNS認証が解除されます。
           </Typography>
           <Box
             mt={5}

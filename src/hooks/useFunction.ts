@@ -32,6 +32,17 @@ export const createAccount = ()=>{
     };
 };
 
+export const createAccountFromPrivateKey = (privateKey:string)=>{
+    const newAddress = Account.createFromPrivateKey(
+        privateKey,
+        networkType
+    );
+    return {
+        privateKey: newAddress.privateKey,
+        publicKey: newAddress.publicKey,
+        address: newAddress.address.plain()
+    };
+};
 
 export const offlineSignature = async (userPrivateKey:string,signedHash:string,signedPayloadSource:string): Promise<boolean> => {
     let signedPayload = signedPayloadSource
@@ -115,8 +126,6 @@ export const getHistory = async (list:string[]): Promise<{address: string, amoun
                 const aggTx = await txRepo.getTransaction(x!.data[idx]!.transactionInfo?.hash!,TransactionGroup.Confirmed,).toPromise()
                 // @ts-ignore
                 if(aggTx!.innerTransactions[0].type === 16724){
-                    // @ts-ignore
-                    console.log(aggTx.innerTransactions[0].signer.address.address)
                     const num = (height - aggTx!.transactionInfo!.height.compact())*30
                     history.push(
                         {

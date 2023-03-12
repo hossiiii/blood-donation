@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, InputLabel, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LeftDrawer from "../component/LeftDrawer";
 import Header from "../component/Header";
 import AlertsDialog from "../component/AlertsDialog";
@@ -16,7 +16,6 @@ import { useQRCode } from 'next-qrcode';
 function Donation(): JSX.Element {
     //LeftDrawerの設定
     const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(false);
-    const [roleList, setRoleList] = useState<string[]>([]);
     const [isWaitingConfirmed, setIsWaitingConfirmed] = useState<boolean>(true);
     const [isWaitingConfirmed2, setIsWaitingConfirmed2] = useState<boolean>(true);
     const [bloodAddressPlain, setBloodAddressPlain] = useState<string>("");
@@ -27,17 +26,6 @@ function Donation(): JSX.Element {
     const handleChange = (event: SelectChangeEvent) => {
       setAmount(event.target.value);
     };
-
-    useEffect(() => {
-        (async () => {
-          const ret = await fetch('/.auth/me');
-          const me = await ret.json();
-          if(me.clientPrincipal){
-            setRoleList(me.clientPrincipal.userRoles);            
-            console.log(me.clientPrincipal.userRoles)
-          }
-        })()
-    }, []);
 
     const handleAgreeClick = async (account:{privateKey:string,publicKey:string,address:string}) => {
       setOpenDialog(false)
@@ -103,7 +91,6 @@ function Donation(): JSX.Element {
       <LeftDrawer
         openLeftDrawer={openLeftDrawer}
         setOpenLeftDrawer={setOpenLeftDrawer}
-        roleList={roleList}
       />
       <Box 
         sx={{ p: 3 }}
@@ -120,7 +107,7 @@ function Donation(): JSX.Element {
           flexDirection="column"
         >
           {(isWaitingConfirmed && isWaitingConfirmed2)?
-          (roleList.includes("check") || roleList.includes("use"))?
+          (JSON.parse(localStorage.getItem('data')!).role === "check" || JSON.parse(localStorage.getItem('data')!).role === "use")?
           <>
             <Typography component="div" variant="caption" sx={{marginBottom:1}}>献血スタッフ、献血した血液を利用される方はメニューから「血液の確認 / 記録」を選んで血液QRコードを読み取って下さい</Typography>          
           </>
@@ -144,7 +131,7 @@ function Donation(): JSX.Element {
             <Button
               disabled={!isWaitingConfirmed}
               variant="contained"
-              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: 'orangered', color: "white", marginTop: "20px"}}
+              style={{width: "70vw", marginLeft: "20px" ,borderRadius: "20px",backgroundColor: (isWaitingConfirmed)?'orangered':'gray', color: "white", marginTop: "20px"}}
               onClick={() => {
                 setOpenDialog(true)
               }}

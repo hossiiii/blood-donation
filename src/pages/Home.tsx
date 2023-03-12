@@ -176,15 +176,19 @@ function Home(): JSX.Element {
                 marginTop={3}
               >
                 <Typography component="div" variant="caption" sx={{fontSize:11 ,marginBottom:1}}>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </Typography>
-                <Image
-                  text={dict.address}
-                  options={{
-                    level: 'M',
-                    margin: 3,
-                    scale: 4,
-                    width: 70,
-                  }}
-                />
+                <Box
+                  onClick={() => {window.open(`https://testnet.symbol.fyi/accounts/${dict.address}`, '_blank')}}
+                >
+                  <Image
+                    text={dict.address}
+                    options={{
+                      level: 'H',
+                      margin: 3,
+                      scale: 10,
+                      width: 70,
+                    }}
+                  />
+                </Box>
                 <TimeLine
                 dict={dict}
                 />

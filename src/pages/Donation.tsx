@@ -171,9 +171,9 @@ function Donation(): JSX.Element {
             <Image
               text={bloodAddressPlain}
               options={{
-                level: 'M',
+                level: 'H',
                 margin: 3,
-                scale: 4,
+                scale: 10,
                 width: 70,
               }}
             />

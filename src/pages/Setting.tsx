@@ -153,14 +153,10 @@ function Setting(): JSX.Element {
               <Image
                 text={exportData}
                 options={{
-                  level: 'M',
+                  level: 'H',
                   margin: 3,
-                  scale: 4,
-                  width: 200,
-                  color: {
-                    dark: '#808000',
-                    light: '#FFFFFF',
-                  },          
+                  scale: 10,
+                  width: 250,
               }}
           />
             :<></>}

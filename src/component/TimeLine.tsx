@@ -36,7 +36,7 @@ function TimeLine(props: {dict:any}): JSX.Element {
         :<></>}
         <Timeline position="alternate">
         {
-            dict.history.map((history: { action: string; seconds: number; name: any; }, index: React.Key | null | undefined) => (
+            dict.history.map((history: { signerAddress:string ,name: string, action: string, message: string, seconds: number }, index: React.Key | null | undefined) => (
             <React.Fragment key={index}>
                 <TimelineItem>
                     <TimelineOppositeContent
@@ -51,16 +51,20 @@ function TimeLine(props: {dict:any}): JSX.Element {
                     <TimelineSeparator>
                     {(history.action==="donation")?
                         <TimelineDot  sx={{ colr:'white', backgroundColor: 'orangered' }}
-                        onClick={() => {window.open(`https://testnet.symbol.fyi/accounts/${dict.address}`, '_blank')}}
+                            onClick={() => {window.open(`https://testnet.symbol.fyi/accounts/${history.signerAddress}`, '_blank')}}
                         >
                         <BloodtypeIcon sx={{ colr:'white', backgroundColor: 'orangered' }}/>
                         </TimelineDot>
                         :(history.action==="check")?
-                        <TimelineDot  sx={{ colr:'white', backgroundColor: 'lightseagreen' }}>
+                        <TimelineDot  sx={{ colr:'white', backgroundColor: 'lightseagreen' }}
+                            onClick={() => {window.open(`https://testnet.symbol.fyi/accounts/${history.signerAddress}`, '_blank')}}
+                        >
                         <CheckCircleIcon sx={{ colr:'white', backgroundColor: 'lightseagreen' }}/>
                         </TimelineDot>
                         :(history.action==="use")?
-                        <TimelineDot  sx={{ colr:'white', backgroundColor: 'salmon' }}>
+                        <TimelineDot  sx={{ colr:'white', backgroundColor: 'salmon' }}
+                            onClick={() => {window.open(`https://testnet.symbol.fyi/accounts/${history.signerAddress}`, '_blank')}}
+                        >
                         <FavoriteIcon sx={{ colr:'white', backgroundColor: 'salmon' }}/>
                         </TimelineDot>
                         :<></>                      
